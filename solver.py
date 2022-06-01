@@ -43,46 +43,46 @@ def exclude_by_letters(letters: str, arr):
 
 
 # generate_rus_5()
-req = ['.', '.', '.', '.', '.']
-exclude = ""
-include = ""
+# req = ['.', '.', '.', '.', '.']
+# exclude = ""
+# include = ""
 
-while(True):
-    input_word = input(
-        'Отправь пустую строчку для нового раунда\nВведи слово (большая на своем месте _ перед буквой не на своем месте)\n> ')
-    if len(input_word) == 0:
-        req = ['.', '.', '.', '.', '.']
-        exclude = ""
-        include = ""
-        print('\n--------------- Новое слово ---------------\n')
-        continue
+# while(True):
+#     input_word = input(
+#         'Отправь пустую строчку для нового раунда\nВведи слово (большая на своем месте _ перед буквой не на своем месте)\n> ')
+#     if len(input_word) == 0:
+#         req = ['.', '.', '.', '.', '.']
+#         exclude = ""
+#         include = ""
+#         print('\n--------------- Новое слово ---------------\n')
+#         continue
 
-    input_word = input_word.replace('ё', 'е')
+#     input_word = input_word.replace('ё', 'е')
 
-    counter = 0
-    for i in range(5):
+#     counter = 0
+#     for i in range(5):
 
-        if input_word[counter] == '_':
-            counter += 1
-            include += input_word[counter]
-            if '[^' in req[i]:
-                tmp = req[i].replace('[^', '').replace(']', '')
-                tmp += input_word[counter]
-                req[i] = f'[^{tmp}]'
-            else:
-                req[i] = f'[^{input_word[counter]}]'
+#         if input_word[counter] == '_':
+#             counter += 1
+#             include += input_word[counter]
+#             if '[^' in req[i]:
+#                 tmp = req[i].replace('[^', '').replace(']', '')
+#                 tmp += input_word[counter]
+#                 req[i] = f'[^{tmp}]'
+#             else:
+#                 req[i] = f'[^{input_word[counter]}]'
 
-        elif input_word[counter].isupper():
-            req[i] = input_word[counter].lower()
-        else:
-            exclude += input_word[counter]
+#         elif input_word[counter].isupper():
+#             req[i] = input_word[counter].lower()
+#         else:
+#             exclude += input_word[counter]
 
-        counter += 1
+#         counter += 1
 
-    res = get_by_mask(''.join(req))
-    # print(res)
-    res = get_by_letters(include, res)
-    # print(res)
+#     res = get_by_mask(''.join(req))
+#     # print(res)
+#     res = get_by_letters(include, res)
+#     # print(res)
 
-    res = exclude_by_letters(exclude, res)
-    print(res)
+#     res = exclude_by_letters(exclude, res)
+#     print(res)
