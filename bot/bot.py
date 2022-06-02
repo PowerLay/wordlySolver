@@ -1,4 +1,5 @@
 import logging
+import os
 
 import aiogram.utils.markdown as md
 from aiogram import Bot, Dispatcher, types
@@ -9,10 +10,10 @@ from aiogram.types import ParseMode
 from aiogram.utils import executor
 
 from solver import get_by_letters, get_by_mask, exclude_by_letters
-# from secret import API_TOKEN
 
 logging.basicConfig(level=logging.INFO)
 
+API_TOKEN = os.environ.get('API_TOKEN')
 bot = Bot(token=API_TOKEN)
 
 # For example use simple MemoryStorage for Dispatcher.
@@ -37,7 +38,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
     logging.info('User start new word %r', message.chat.username)
 
-    await message.reply("Привет! Введи слово (большая если на своем месте _ перед буквой если не на своем месте)", reply_markup=types.ReplyKeyboardRemove())
+    await message.reply("Привет! Введи слово (большая если на своем месте . перед буквой если не на своем месте)", reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(commands='help')
@@ -45,7 +46,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
     """
     Help
     """
-    await message.reply("Бот который умеет решать wordly. Это игра где загадывают слово из 5 букв и вы подбираете слова. Если вы не угадали букву, напишите ее маленькой буквой. Если буква есть в слове но вы не угадали с позицией то поставьте перед буквой \"_\". А если буква на своем месте напишите ее заглавной.", reply_markup=types.ReplyKeyboardRemove())
+    await message.reply("Бот который умеет решать wordly. Это игра где загадывают слово из 5 букв и вы подбираете слова. Если вы не угадали букву, напишите ее маленькой буквой. Если буква есть в слове но вы не угадали с позицией то поставьте перед буквой \".\". А если буква на своем месте напишите ее заглавной.", reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler()
@@ -64,12 +65,12 @@ async def process_name(message: types.Message, state: FSMContext):
         words.append(input_word)
 
         counter = 0
-        if len(input_word.replace('_', '')) != 5:
+        if len(input_word.replace('.', '')) != 5:
             await message.reply("Должно быть 5 букв.\n/help")
             return
         for i in range(5):
 
-            if input_word[counter] == '_':
+            if input_word[counter] == '.':
                 counter += 1
                 include += input_word[counter]
                 if '[^' in req[i]:
