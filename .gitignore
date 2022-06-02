@@ -1,6 +1,5 @@
 /russian_nouns_5.txt
-solver.py
 env/
 testenv/
-__pycache__/solver.cpython-310.pyc
+__pycache__/
 secret.py
