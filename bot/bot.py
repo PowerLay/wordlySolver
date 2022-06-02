@@ -109,7 +109,6 @@ async def process_name(message: types.Message, state: FSMContext):
                 md.text('Получившиеся слова:', md.code(', '.join(res[:60]))),
                 sep='\n',
             ),
-            parse_mode=ParseMode.MARKDOWN_V2,
         )
 
         if len(res) <= 0:
