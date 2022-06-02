@@ -23,7 +23,6 @@ dp = Dispatcher(bot, storage=storage)
 
 @dp.message_handler(commands='start')
 @dp.message_handler(commands='next')
-@dp.message_handler(Text(equals='next', ignore_case=True))
 async def cmd_start(message: types.Message, state: FSMContext):
     """
     Conversation's entry point
