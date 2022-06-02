@@ -101,12 +101,12 @@ async def process_name(message: types.Message, state: FSMContext):
         await bot.send_message(
             message.chat.id,
             md.text(
-                md.text('Маска поиска:', md.escape_md(''.join(req))),
-                md.text('Исключенные символы:', md.bold(exclude)),
-                md.text('Обязательные символы:', md.bold(include)),
+                md.text('Маска поиска:', ''.join(req)),
+                md.text('Исключенные символы:', exclude),
+                md.text('Обязательные символы:', include),
                 md.text('История слов:', md.text(
                     *words, sep='\n'), sep='\n'),
-                md.text('Получившиеся слова:', md.code(', '.join(res[:60]))),
+                md.text('Получившиеся слова:', md.text(', '.join(res[:60]))),
                 sep='\n',
             ),
         )
