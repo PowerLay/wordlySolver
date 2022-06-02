@@ -9,7 +9,7 @@ from aiogram.types import ParseMode
 from aiogram.utils import executor
 
 from solver import get_by_letters, get_by_mask, exclude_by_letters
-from secret import API_TOKEN
+# from secret import API_TOKEN
 
 logging.basicConfig(level=logging.INFO)
 
