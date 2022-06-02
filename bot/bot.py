@@ -92,8 +92,8 @@ async def process_name(message: types.Message, state: FSMContext):
         res = exclude_by_letters(exclude, res)
 
         await state.update_data(req=req)
-        state['exclude'] = exclude
-        state['include'] = include
+        data['exclude'] = exclude
+        data['include'] = include
         await state.update_data(words=words)
 
         logging.info('Word len %r', len(res))
