@@ -46,7 +46,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
     """
     Help
     """
-    await message.reply("Бот который умеет решать wordly. Это игра где загадывают слово из 5 букв и вы подбираете слова. Если вы не угадали букву, напишите ее маленькой буквой. Если буква есть в слове но вы не угадали с позицией то поставьте перед буквой \".\". А если буква на своем месте напишите ее заглавной.", reply_markup=types.ReplyKeyboardRemove())
+    await message.reply("Бот который умеет решать wordly. Это игра где загадывают слово из 5 букв и вы подбираете слова. Если вы не угадали букву, напишите ее маленькой буквой. Если буква есть в слове но вы не угадали с позицией то поставьте перед буквой \"!\". А если буква на своем месте напишите ее заглавной.", reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler()
@@ -65,12 +65,12 @@ async def process_name(message: types.Message, state: FSMContext):
         words.append(input_word)
 
         counter = 0
-        if len(input_word.replace('.', '')) != 5:
+        if len(input_word.replace('!', '')) != 5:
             await message.reply("Должно быть 5 букв.\n/help")
             return
         for i in range(5):
 
-            if input_word[counter] == '.':
+            if input_word[counter] == '!':
                 counter += 1
                 include += input_word[counter]
                 if '[^' in req[i]:
