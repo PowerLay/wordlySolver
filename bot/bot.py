@@ -37,7 +37,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
     logging.info('User start new word %r', message.chat.username)
 
-    await message.reply("Привет! Введи слово (большая если на своем месте . перед буквой если не на своем месте)", reply_markup=types.ReplyKeyboardRemove())
+    await message.reply("Привет! Введи слово (большая если на своем месте \"-\" перед буквой если не на своем месте)", reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(commands='help')
