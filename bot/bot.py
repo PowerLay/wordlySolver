@@ -81,14 +81,16 @@ async def process_name(message: types.Message, state: FSMContext):
 
             elif input_word[counter].isupper():
                 req[i] = input_word[counter].lower()
+                include += input_word[counter].lower()
             else:
                 exclude += input_word[counter]
 
             counter += 1
 
+        exclude = exclude.translate(None, include)
+
         res = get_by_mask(''.join(req))
         res = get_by_letters(include, res)
-
         res = exclude_by_letters(exclude, res)
 
         await state.update_data(req=req)
