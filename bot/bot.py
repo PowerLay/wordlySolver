@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 import aiogram.utils.markdown as md
 from aiogram import Bot, Dispatcher, types
@@ -87,7 +88,7 @@ async def process_name(message: types.Message, state: FSMContext):
 
             counter += 1
 
-        exclude = exclude.translate(None, include)
+        exclude = re.sub(f'[{include}]', '', exclude)
 
         res = get_by_mask(''.join(req))
         res = get_by_letters(include, res)
