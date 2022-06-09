@@ -58,7 +58,11 @@ async def process_name(message: types.Message, state: FSMContext):
 
     async with state.proxy() as data:
         input_word = input_word.replace('ё', 'е')
-        req = data['req']
+        try:
+            req = data['req']
+        except KeyError:
+            req = ['.', '.', '.', '.', '.']
+        pass
         exclude = data['exclude']
         include = data['include']
         words = data['words']
