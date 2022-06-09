@@ -12,7 +12,10 @@ from aiogram.utils import executor
 
 from solver import get_by_letters, get_by_mask, exclude_by_letters
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S'
+                    )
 
 API_TOKEN = os.environ.get('API_TOKEN')
 bot = Bot(token=API_TOKEN)
