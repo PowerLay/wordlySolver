@@ -94,9 +94,8 @@ async def process_name(message: types.Message, state: FSMContext):
                 exclude += input_word[counter]
 
             counter += 1
-
-        exclude = re.sub(f'[{include}]', '', exclude)
-
+        if include:
+            exclude = re.sub(f'[{include}]', '', exclude)
         res = get_by_mask(''.join(req))
         res = get_by_letters(include, res)
         res = exclude_by_letters(exclude, res)
@@ -108,10 +107,14 @@ async def process_name(message: types.Message, state: FSMContext):
 
         logging.info('Word len %r', len(res))
 
+        best_words_to_write = get_by_mask('')
+        best_words_to_write = exclude_by_letters(include, best_words_to_write)
+
         await bot.send_message(
             message.chat.id,
             md.text(
                 md.text('Маска поиска:', ''.join(req)),
+                md.text('Лучше попробовать эти слова:', best_words_to_write),
                 md.text('Исключенные символы:', exclude),
                 md.text('Обязательные символы:', include),
                 md.text('История слов:', md.text(
