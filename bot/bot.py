@@ -105,7 +105,20 @@ async def process_name(message: types.Message, state: FSMContext):
         data['include'] = include
         await state.update_data(words=words)
 
+        max_words = 170
+        out_res = []
         logging.info('Word len %r', len(res))
+        if len(res)> max_words:
+            for w in res:
+                for c in w:
+                    if w.count(c) > 1:
+                        break
+                else:
+                    out_res.append(w)
+        else:
+            out_res = res
+
+        logging.info('Word len %r', len(out_res))
 
         best_words_to_write = get_by_mask('')
         best_words_to_write = exclude_by_letters(include, best_words_to_write)
@@ -119,7 +132,11 @@ async def process_name(message: types.Message, state: FSMContext):
                 md.text('Обязательные символы:', include),
                 md.text('История слов:', md.text(
                     *words, sep='\n'), sep='\n'),
-                md.text('Получившиеся слова:', md.text(', '.join(res[:60]))),
+                md.text('Всего найдено:', len(res)),
+                md.text('Лучше попробовать эти слова:', best_words_to_write),
+                md.text('С уникальными буквами:', len(out_res)),
+                md.text('Выводится:', min(len(out_res),max_words)),
+                md.text('Получившиеся слова:', md.text(', '.join(out_res[:max_words]))),
                 sep='\n',
             ),
         )
