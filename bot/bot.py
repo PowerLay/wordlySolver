@@ -1,5 +1,6 @@
 import logging
 import os
+import random
 import re
 
 import aiogram.utils.markdown as md
@@ -139,6 +140,9 @@ async def process_name(message: types.Message, state: FSMContext):
             best_words_to_write_res = res
         logging.info('Best word new len %r', len(best_words_to_write_res))
 
+        # get 10 random words from best_words_to_write_res
+        best_words_to_write_res = random.sample(best_words_to_write_res, 10)
+
         await bot.send_message(
             message.chat.id,
             md.text(
@@ -148,10 +152,10 @@ async def process_name(message: types.Message, state: FSMContext):
                 md.text('История слов:', md.text(
                     *words, sep='\n'), sep='\n'),
                 md.text('Всего найдено:', len(res)),
-                md.text('Лучше попробовать эти слова:', md.text(', '.join(best_words_to_write_res[:max_words]))),
                 md.text('С уникальными буквами:', len(out_res)),
                 md.text('Выводится:', min(len(out_res),max_words)),
                 md.text('Получившиеся слова:', md.text(', '.join(out_res[:max_words]))),
+                md.text('Лучше попробовать эти слова:', md.text(', '.join(best_words_to_write_res[:max_words]))),
                 sep='\n',
             ),
         )
