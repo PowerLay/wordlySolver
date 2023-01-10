@@ -99,7 +99,7 @@ async def process_name(message: types.Message, state: FSMContext):
         if include:
             exclude = re.sub('[{}]'.format(include), '', exclude)
 
-        res = get_by_mask(''.join(req),"/home/kozlukov_o/workdir/wordlySolver/bot/dict_5.txt")
+        res = get_by_mask(''.join(req))
         res = get_by_letters(include, res)
         res = exclude_by_letters(exclude, res)
 
@@ -121,11 +121,12 @@ async def process_name(message: types.Message, state: FSMContext):
         else:
             out_res = res
 
-        logging.info('Word len %r', len(out_res))
+        logging.info('Word len new %r', len(out_res))
 
-        best_words_to_write = get_by_mask('')
+        best_words_to_write = get_by_mask('.....')
         best_words_to_write = exclude_by_letters(include, best_words_to_write)
 
+        logging.info('Best word len %r', len(best_words_to_write))
         best_words_to_write_res = []
         if len(best_words_to_write)> max_words:
             for w in best_words_to_write:
@@ -136,6 +137,7 @@ async def process_name(message: types.Message, state: FSMContext):
                     best_words_to_write_res.append(w)
         else:
             best_words_to_write_res = res
+        logging.info('Best word new len %r', len(best_words_to_write_res))
 
         await bot.send_message(
             message.chat.id,
