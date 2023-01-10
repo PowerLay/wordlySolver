@@ -135,6 +135,8 @@ async def process_name(message: types.Message, state: FSMContext):
                         break
                 else:
                     best_words_to_write_res.append(w)
+                if len(best_words_to_write_res) > max_words:
+                    break
         else:
             best_words_to_write_res = res
         logging.info('Best word new len %r', len(best_words_to_write_res))
