@@ -16,9 +16,11 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S'
                     )
-
+# PROXY_URL = os.environ.get('PROXY_URL')
 API_TOKEN = os.environ.get('API_TOKEN')
 bot = Bot(token=API_TOKEN)
+# bot = Bot(token=API_TOKEN, proxy=PROXY_URL)
+#bot = Bot(token=API_TOKEN, session=session)
 
 # For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
@@ -83,9 +85,9 @@ async def process_name(message: types.Message, state: FSMContext):
                 if '[^' in req[i]:
                     tmp = req[i].replace('[^', '').replace(']', '')
                     tmp += input_word[counter]
-                    req[i] = f'[^{tmp}]'
+                    req[i] = '[^{}]'.format(tmp)
                 else:
-                    req[i] = f'[^{input_word[counter]}]'
+                    req[i] = '[^{}]'.format(input_word[counter])
 
             elif input_word[counter].isupper():
                 req[i] = input_word[counter].lower()
@@ -95,8 +97,9 @@ async def process_name(message: types.Message, state: FSMContext):
 
             counter += 1
         if include:
-            exclude = re.sub(f'[{include}]', '', exclude)
-        res = get_by_mask(''.join(req))
+            exclude = re.sub('[{}]'.format(include), '', exclude)
+
+        res = get_by_mask(''.join(req),"/home/kozlukov_o/workdir/wordlySolver/bot/dict_5.txt")
         res = get_by_letters(include, res)
         res = exclude_by_letters(exclude, res)
 
@@ -105,7 +108,7 @@ async def process_name(message: types.Message, state: FSMContext):
         data['include'] = include
         await state.update_data(words=words)
 
-        max_words = 170
+        max_words = 90
         out_res = []
         logging.info('Word len %r', len(res))
         if len(res)> max_words:
@@ -123,17 +126,27 @@ async def process_name(message: types.Message, state: FSMContext):
         best_words_to_write = get_by_mask('')
         best_words_to_write = exclude_by_letters(include, best_words_to_write)
 
+        best_words_to_write_res = []
+        if len(best_words_to_write)> max_words:
+            for w in best_words_to_write:
+                for c in w:
+                    if w.count(c) > 1:
+                        break
+                else:
+                    best_words_to_write_res.append(w)
+        else:
+            best_words_to_write_res = res
+
         await bot.send_message(
             message.chat.id,
             md.text(
                 md.text('Маска поиска:', ''.join(req)),
-                md.text('Лучше попробовать эти слова:', best_words_to_write),
                 md.text('Исключенные символы:', exclude),
                 md.text('Обязательные символы:', include),
                 md.text('История слов:', md.text(
                     *words, sep='\n'), sep='\n'),
                 md.text('Всего найдено:', len(res)),
-                md.text('Лучше попробовать эти слова:', best_words_to_write),
+                md.text('Лучше попробовать эти слова:', best_words_to_write_res),
                 md.text('С уникальными буквами:', len(out_res)),
                 md.text('Выводится:', min(len(out_res),max_words)),
                 md.text('Получившиеся слова:', md.text(', '.join(out_res[:max_words]))),
