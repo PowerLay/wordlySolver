@@ -18,6 +18,14 @@ def get_by_mask(mask: str, file='dict_5.txt'):
     return res
 
 
+def get_letters_from_words(words_arr):
+    res = ''
+    for word in words_arr:
+        for c in word:
+            if not c in res:
+                res += c
+    return res
+
 def get_by_letters(letters: str, arr):
     res = []
     for str in arr:
