@@ -142,7 +142,8 @@ async def process_name(message: types.Message, state: FSMContext):
         logging.info('Best word new len %r', len(best_words_to_write_res))
 
         # get 10 random words from best_words_to_write_res
-        best_words_to_write_res = random.sample(best_words_to_write_res, 10)
+        if len(best_words_to_write_res) > 10:
+            best_words_to_write_res = random.sample(best_words_to_write_res, 10)
 
         await bot.send_message(
             message.chat.id,
