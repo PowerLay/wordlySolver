@@ -10,6 +10,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.types import ParseMode
 from aiogram.utils import executor
+from dotenv import load_dotenv
 
 from solver import get_by_letters, get_by_mask, exclude_by_letters, get_letters_from_words
 
@@ -18,7 +19,7 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='%Y-%m-%d %H:%M:%S'
                     )
 # PROXY_URL = os.environ.get('PROXY_URL')
-API_TOKEN = os.environ.get('API_TOKEN')
+API_TOKEN = os.environ.get('BOT_TOKEN')
 bot = Bot(token=API_TOKEN)
 # bot = Bot(token=API_TOKEN, proxy=PROXY_URL)
 #bot = Bot(token=API_TOKEN, session=session)
@@ -167,5 +168,7 @@ async def process_name(message: types.Message, state: FSMContext):
             await message.reply("Слово не найдено.\n/next")
 
 if __name__ == '__main__':
+    # Load the environment variables from the .env file
+    load_dotenv()
     # executor.start_polling(dp, skip_updates=True)
     executor.start_polling(dp)
