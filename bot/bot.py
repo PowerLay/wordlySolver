@@ -127,7 +127,7 @@ async def process_name(message: types.Message, state: FSMContext):
         best_words_to_write = get_by_mask('.....')
         best_words_to_write = exclude_by_letters(exclude, best_words_to_write)
         best_words_to_write = exclude_by_letters(include, best_words_to_write)
-        best_words_to_write = get_by_letters(get_letters_from_words(res), best_words_to_write)
+        # best_words_to_write = get_by_letters(get_letters_from_words(res), best_words_to_write)
 
         logging.info('Best word len %r', len(best_words_to_write))
         best_words_to_write_res = []
