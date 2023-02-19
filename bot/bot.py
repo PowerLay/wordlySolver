@@ -145,12 +145,14 @@ async def process_name(message: types.Message, state: FSMContext):
 
         # count letters at out_res
         letters = {}
+        # set letters by kirillic
+        for c in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя':
+            letters[c] = 0
+
         for w in out_res:
             for c in w:
                 if c in letters:
                     letters[c] += 1
-                else:
-                    letters[c] = 1
 
         # get 10 words with most letters
         best_words_to_write_res = sorted(best_words_to_write_res, key=lambda x: sum([letters[c] for c in x]), reverse=True)
