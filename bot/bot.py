@@ -96,6 +96,13 @@ async def process_name(message: types.Message, state: FSMContext):
                 include += input_word[counter].lower()
             else:
                 exclude += input_word[counter]
+                # TODO: to function
+                if '[^' in req[i]:
+                    tmp = req[i].replace('[^', '').replace(']', '')
+                    tmp += input_word[counter]
+                    req[i] = '[^{}]'.format(tmp)
+                else:
+                    req[i] = '[^{}]'.format(input_word[counter])
 
             counter += 1
         if include:
