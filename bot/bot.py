@@ -184,13 +184,13 @@ async def process_name(message: types.Message, state: FSMContext):
             await message.reply("Слово не найдено.\n/next")
 
 def set_exclude_mask(input_char, current_mask_char):
-    if not '.' in current_mask_char:
-        return current_mask_char
     if '[^' in current_mask_char:
         tmp = current_mask_char.replace('[^', '').replace(']', '')
         tmp += input_char
         tmp = ''.join(set(tmp))
         return '[^{}]'.format(tmp)
+    elif not '.' in current_mask_char:
+        return current_mask_char
     else:
         return '[^{}]'.format(input_char)
 
