@@ -84,25 +84,16 @@ async def process_name(message: types.Message, state: FSMContext):
             if input_word[counter] == '-':
                 counter += 1
                 include += input_word[counter]
-                if '[^' in req[i]:
-                    tmp = req[i].replace('[^', '').replace(']', '')
-                    tmp += input_word[counter]
-                    req[i] = '[^{}]'.format(tmp)
-                else:
-                    req[i] = '[^{}]'.format(input_word[counter])
+                include = ''.join(set(include))
+                req[i] = set_exclude_mask(input_word[counter], req[i])
 
             elif input_word[counter].isupper():
                 req[i] = input_word[counter].lower()
                 include += input_word[counter].lower()
             else:
                 exclude += input_word[counter]
-                # TODO: to function
-                if '[^' in req[i]:
-                    tmp = req[i].replace('[^', '').replace(']', '')
-                    tmp += input_word[counter]
-                    req[i] = '[^{}]'.format(tmp)
-                else:
-                    req[i] = '[^{}]'.format(input_word[counter])
+                exclude = ''.join(set(exclude))
+                req[i] = set_exclude_mask(input_word[counter], req[i])
 
             counter += 1
         if include:
@@ -190,6 +181,15 @@ async def process_name(message: types.Message, state: FSMContext):
 
         if len(res) <= 0:
             await message.reply("Слово не найдено.\n/next")
+
+def set_exclude_mask(input_char, current_mask_char):
+    if '[^' in current_mask_char:
+        tmp = current_mask_char.replace('[^', '').replace(']', '')
+        tmp += input_char
+        tmp = ''.join(set(tmp))
+        return '[^{}]'.format(tmp)
+    else:
+        return '[^{}]'.format(input_char)
 
 if __name__ == '__main__':
     # Load the environment variables from the .env file
