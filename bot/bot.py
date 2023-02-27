@@ -90,6 +90,7 @@ async def process_name(message: types.Message, state: FSMContext):
             elif input_word[counter].isupper():
                 req[i] = input_word[counter].lower()
                 include += input_word[counter].lower()
+                include = ''.join(set(include))
             else:
                 exclude += input_word[counter]
                 exclude = ''.join(set(exclude))
