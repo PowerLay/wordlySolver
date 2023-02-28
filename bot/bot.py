@@ -48,6 +48,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
     # get top words
     top_words = get_by_mask('.....')
+    top_words = remove_repeating_letters(top_words)
 
     top_letters = get_top_letters(top_words)
     print(top_letters)
@@ -120,15 +121,9 @@ async def process_name(message: types.Message, state: FSMContext):
         await state.update_data(words=words)
 
         max_words = 90
-        out_res = []
         logging.info('Word len %r', len(res))
         if len(res)> max_words:
-            for w in res:
-                for c in w:
-                    if w.count(c) > 1:
-                        break
-                else:
-                    out_res.append(w)
+            out_res = remove_repeating_letters(res)
         else:
             out_res = res
 
@@ -183,6 +178,16 @@ async def process_name(message: types.Message, state: FSMContext):
 
         if len(res) <= 0:
             await message.reply("Слово не найдено.\n/next")
+
+def remove_repeating_letters(res):
+    out_res = []
+    for w in res:
+        for c in w:
+            if w.count(c) > 1:
+                break
+        else:
+            out_res.append(w)
+    return out_res
 
 def get_top_letters(res):
     # count letters at res
