@@ -27,7 +27,10 @@ bot = Bot(token=API_TOKEN)
 # For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
-
+commands = [
+    ('next', 'Следующее слово')
+]
+bot.set_my_commands()
 
 @dp.message_handler(commands='start')
 @dp.message_handler(commands='next')
