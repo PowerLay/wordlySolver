@@ -54,7 +54,7 @@ async def cmd_start(message: types.Message, state: FSMContext):
     top_words = sorted(top_words, key=lambda x: sum([1 if c in top_letters else 0 for c in x]), reverse=True)
 
 
-    await message.reply("Привет! Введи слово (большая если на своем месте \"-\" перед буквой если не на своем месте)\nЛучше начать с %s" % top_words[0],
+    await message.reply("Привет! Введи слово (большая если на своем месте \"-\" перед буквой если не на своем месте)\n\nЛучше начать с %s" % top_words[0],
                         reply_markup=types.ReplyKeyboardRemove())
 
 
@@ -170,7 +170,7 @@ async def process_name(message: types.Message, state: FSMContext):
                 md.text('С уникальными буквами:', len(out_res)),
                 md.text('Выводится:', min(len(out_res),max_words)),
                 md.text('Получившиеся слова:', md.text(', '.join(out_res[:max_words]))),
-                md.text('Лучше попробовать эти слова:', md.text(', '.join(best_words_to_write_res[:max_words]))),
+                md.text('\nЛучше попробовать эти слова:', md.text(', '.join(best_words_to_write_res[:max_words]))),
                 sep='\n',
             ),
         )
