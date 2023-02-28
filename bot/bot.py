@@ -51,7 +51,6 @@ async def cmd_start(message: types.Message, state: FSMContext):
     top_words = remove_repeating_letters(top_words)
 
     top_letters = get_top_letters(top_words)
-    print(top_letters)
     top_words = sorted(top_words, key=lambda x: sum([1 if c in top_letters else 0 for c in x]), reverse=True)
 
 
