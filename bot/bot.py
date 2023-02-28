@@ -8,7 +8,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
-from aiogram.types import ParseMode
+from aiogram.types import ParseMode, BotCommand
 from aiogram.utils import executor
 from dotenv import load_dotenv
 
@@ -29,10 +29,6 @@ bot = Bot(token=API_TOKEN)
 # For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
-commands = [
-    ('next', 'Следующее слово')
-]
-bot.set_my_commands()
 
 @dp.message_handler(commands='start')
 @dp.message_handler(commands='next')
@@ -199,6 +195,14 @@ def set_exclude_mask(input_char, current_mask_char):
     else:
         return '[^{}]'.format(input_char)
 
+async def setup_bot_commands(dp):
+    bot_commands = [
+        types.BotCommand(command="/help", description="Помощь"),
+        types.BotCommand(command="/next", description="Следующее слово"),
+        types.BotCommand(command="/start", description="Начать заново"),
+    ]
+    await bot.set_my_commands(bot_commands)
+
 if __name__ == '__main__':
     # executor.start_polling(dp, skip_updates=True)
-    executor.start_polling(dp)
+    executor.start_polling(dp, on_startup=setup_bot_commands)
