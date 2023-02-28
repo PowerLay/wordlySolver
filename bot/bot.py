@@ -18,11 +18,13 @@ logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S'
                     )
-# PROXY_URL = os.environ.get('PROXY_URL')
+# Load the environment variables from the .env file
+load_dotenv()
 API_TOKEN = os.environ.get('BOT_TOKEN')
 bot = Bot(token=API_TOKEN)
 # bot = Bot(token=API_TOKEN, proxy=PROXY_URL)
 #bot = Bot(token=API_TOKEN, session=session)
+# PROXY_URL = os.environ.get('PROXY_URL')
 
 # For example use simple MemoryStorage for Dispatcher.
 storage = MemoryStorage()
@@ -198,7 +200,5 @@ def set_exclude_mask(input_char, current_mask_char):
         return '[^{}]'.format(input_char)
 
 if __name__ == '__main__':
-    # Load the environment variables from the .env file
-    load_dotenv()
     # executor.start_polling(dp, skip_updates=True)
     executor.start_polling(dp)
