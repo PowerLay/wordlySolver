@@ -12,7 +12,7 @@ from aiogram.types import ParseMode, BotCommand
 from aiogram.utils import executor
 from dotenv import load_dotenv
 
-from solver import get_by_letters, get_by_mask, exclude_by_letters, get_letters_from_words
+from solver import get_by_letters, get_by_mask, exclude_by_letters, get_letters_from_words, generate_rus_5
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s - %(funcName)s: %(message)s',
@@ -46,7 +46,16 @@ async def cmd_start(message: types.Message, state: FSMContext):
 
     logging.info('User start new word %r', message.chat.username)
 
-    await message.reply("Привет! Введи слово (большая если на своем месте \"-\" перед буквой если не на своем месте)", reply_markup=types.ReplyKeyboardRemove())
+    # get top words
+    top_words = get_by_mask('.....')
+
+    top_letters = get_top_letters(top_words)
+    print(top_letters)
+    top_words = sorted(top_words, key=lambda x: sum([1 if c in top_letters else 0 for c in x]), reverse=True)
+
+
+    await message.reply("Привет! Введи слово (большая если на своем месте \"-\" перед буквой если не на своем месте)\nЛучше начать с %s" % top_words[0],
+                        reply_markup=types.ReplyKeyboardRemove())
 
 
 @dp.message_handler(commands='help')
@@ -143,19 +152,10 @@ async def process_name(message: types.Message, state: FSMContext):
             best_words_to_write_res = res
         logging.info('Best word new len %r', len(best_words_to_write_res))
 
-        # count letters at out_res
-        letters = {}
-        # set letters by kirillic
-        for c in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя':
-            letters[c] = 0
-
-        for w in out_res:
-            for c in w:
-                if c in letters:
-                    letters[c] += 1
+        top_letters = get_top_letters(out_res)
 
         # get 10 words with most letters
-        best_words_to_write_res = sorted(best_words_to_write_res, key=lambda x: sum([letters[c] for c in x]), reverse=True)
+        best_words_to_write_res = sorted(best_words_to_write_res, key=lambda x: sum([top_letters[c] for c in x]), reverse=True)
 
         if len(best_words_to_write_res) > max_words:
             best_words_to_write_res = best_words_to_write_res[:10]
@@ -184,6 +184,20 @@ async def process_name(message: types.Message, state: FSMContext):
         if len(res) <= 0:
             await message.reply("Слово не найдено.\n/next")
 
+def get_top_letters(res):
+    # count letters at res
+        letters = {}
+        # set letters by kirillic
+        for c in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя':
+            letters[c] = 0
+
+        for w in res:
+            for c in w:
+                if c in letters:
+                    letters[c] += 1
+        # letters = sorted(letters.items(), key=lambda x: x[1], reverse=True)
+        return letters
+
 def set_exclude_mask(input_char, current_mask_char):
     if '[^' in current_mask_char:
         tmp = current_mask_char.replace('[^', '').replace(']', '')
@@ -204,5 +218,6 @@ async def setup_bot_commands(dp):
     await bot.set_my_commands(bot_commands)
 
 if __name__ == '__main__':
+    # generate_rus_5()
     # executor.start_polling(dp, skip_updates=True)
     executor.start_polling(dp, on_startup=setup_bot_commands)
