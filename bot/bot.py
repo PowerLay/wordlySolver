@@ -135,7 +135,15 @@ async def process_name(message: types.Message, state: FSMContext):
 
         logging.info('Best word len %r', len(best_words_to_write))
         best_words_to_write_res = []
-        if len(best_words_to_write)> max_words:
+        if len(best_words_to_write) == 0:
+            extend_exclude = ''
+            for i in req:
+                if '[' in i:
+                    extend_exclude += i.replace('[^', '').replace(']', '')
+            best_words_to_write_res = get_by_mask('.....')
+            best_words_to_write_res = exclude_by_letters(exclude, best_words_to_write_res)
+            best_words_to_write_res = exclude_by_letters(extend_exclude, best_words_to_write_res)
+        elif len(best_words_to_write)> max_words:
             for w in best_words_to_write:
                 for c in w:
                     if w.count(c) > 1:
@@ -143,7 +151,7 @@ async def process_name(message: types.Message, state: FSMContext):
                 else:
                     best_words_to_write_res.append(w)
         else:
-            best_words_to_write_res = res
+            best_words_to_write_res = best_words_to_write
         logging.info('Best word new len %r', len(best_words_to_write_res))
 
         top_letters = get_top_letters(out_res)
