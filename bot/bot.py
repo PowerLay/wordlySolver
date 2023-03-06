@@ -143,8 +143,6 @@ async def process_name(message: types.Message, state: FSMContext):
             best_words_to_write_res = get_by_mask('.....')
             best_words_to_write_res = exclude_by_letters(exclude, best_words_to_write_res)
             best_words_to_write_res = exclude_by_letters(extend_exclude, best_words_to_write_res)
-        else:
-            best_words_to_write_res = best_words_to_write
 
         if len(best_words_to_write)> max_words:
             for w in best_words_to_write:
