@@ -71,10 +71,9 @@ async def process_name(message: types.Message, state: FSMContext):
     """
     Calc word
     """
-    input_word = message.text
+    input_words = message.text
 
     async with state.proxy() as data:
-        input_word = input_word.replace('ё', 'е')
         try:
             req = data['req']
         except KeyError:
@@ -83,32 +82,36 @@ async def process_name(message: types.Message, state: FSMContext):
         exclude = data['exclude']
         include = data['include']
         words = data['words']
-        words.append(input_word)
 
-        counter = 0
-        if len(input_word.replace('-', '')) != 5:
-            await message.reply("Должно быть 5 букв.\n/help")
-            return
-        for i in range(5):
+        for input_word in input_words.split('\n'):
+            input_word = input_word.replace('ё', 'е')
 
-            if input_word[counter] == '-':
+            words.append(input_word)
+
+            counter = 0
+            if len(input_word.replace('-', '')) != 5:
+                await message.reply("Должно быть 5 букв.\n/help")
+                return
+            for i in range(5):
+
+                if input_word[counter] == '-':
+                    counter += 1
+                    include += input_word[counter]
+                    include = ''.join(set(include))
+                    req[i] = set_exclude_mask(input_word[counter], req[i])
+
+                elif input_word[counter].isupper():
+                    req[i] = input_word[counter].lower()
+                    include += input_word[counter].lower()
+                    include = ''.join(set(include))
+                else:
+                    exclude += input_word[counter]
+                    exclude = ''.join(set(exclude))
+                    req[i] = set_exclude_mask(input_word[counter], req[i])
+
                 counter += 1
-                include += input_word[counter]
-                include = ''.join(set(include))
-                req[i] = set_exclude_mask(input_word[counter], req[i])
-
-            elif input_word[counter].isupper():
-                req[i] = input_word[counter].lower()
-                include += input_word[counter].lower()
-                include = ''.join(set(include))
-            else:
-                exclude += input_word[counter]
-                exclude = ''.join(set(exclude))
-                req[i] = set_exclude_mask(input_word[counter], req[i])
-
-            counter += 1
-        if include:
-            exclude = re.sub('[{}]'.format(include), '', exclude)
+            if include:
+                exclude = re.sub('[{}]'.format(include), '', exclude)
 
         res = get_by_mask(''.join(req))
         res = get_by_letters(include, res)
@@ -147,8 +150,6 @@ async def process_name(message: types.Message, state: FSMContext):
                 if word.count(c) > 1:
                     scored_words[word] -= 1000
 
-        if len(best_words_to_write_res) > max_words:
-            best_words_to_write_res = best_words_to_write_res[:10]
 
         # words = sorted(words, key=lambda x: sum([top_letters[c] for c in x]), reverse=True)
         words_by_score = sorted(words_by_score, key=lambda x: scored_words[x], reverse=True)
@@ -189,7 +190,7 @@ def get_top_letters(res):
     # count letters at res
         letters = {}
         # set letters by kirillic
-        for c in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя':
+        for c in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя-':
             letters[c] = 0
 
         for w in res:
