@@ -85,13 +85,13 @@ async def process_name(message: types.Message, state: FSMContext):
 
         for input_word in input_words.split('\n'):
             input_word = input_word.replace('ё', 'е')
+            if len(input_word.replace('-', '')) != 5:
+                await message.reply("Должно быть 5 букв.\n/help")
+                return
 
             words.append(input_word)
 
             counter = 0
-            if len(input_word.replace('-', '')) != 5:
-                await message.reply("Должно быть 5 букв.\n/help")
-                return
             for i in range(5):
 
                 if input_word[counter] == '-':
