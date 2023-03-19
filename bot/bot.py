@@ -128,46 +128,32 @@ async def process_name(message: types.Message, state: FSMContext):
 
         logging.info('Word len new %r', len(out_res))
 
-        best_words_to_write = get_by_mask('.....')
-        best_words_to_write = exclude_by_letters(exclude, best_words_to_write)
-        best_words_to_write = exclude_by_letters(include, best_words_to_write)
-        # best_words_to_write = get_by_letters(get_letters_from_words(res), best_words_to_write)
+        # Составление слов в которых есть самые частые буквы из out_res
+        scored_words = {}
+        words_by_score = get_by_mask('.....')
+        tmp_top_letters = get_top_letters(out_res)
 
-        logging.info('Best word len %r', len(best_words_to_write))
-        best_words_to_write_res = []
-        if len(best_words_to_write) == 0:
-            extend_exclude = ''
-            for i in req:
-                if '[' in i:
-                    extend_exclude += i.replace('[^', '').replace(']', '')
-            best_words_to_write_res = get_by_mask('.....')
-            best_words_to_write_res = exclude_by_letters(exclude, best_words_to_write_res)
-            best_words_to_write_res = exclude_by_letters(extend_exclude, best_words_to_write_res)
+        for word in words_by_score:
+            scored_words[word] = 0
+            for c in word:
 
-        if len(best_words_to_write)> max_words:
-            for w in best_words_to_write:
-                for c in w:
-                    if w.count(c) > 1:
-                        break
+                if c in include:
+                    scored_words[word] -= 1
+                elif c in exclude:
+                    scored_words[word] -= 1
                 else:
-                    best_words_to_write_res.append(w)
-        else:
-            best_words_to_write_res = best_words_to_write
+                    scored_words[word] += tmp_top_letters[c] * 2
 
-        best_words_to_write_res = exclude_by_letters('-', best_words_to_write_res)
-        logging.info('Best word new len %r', len(best_words_to_write_res))
-
-        top_letters = get_top_letters(out_res)
-
-        # get 10 words with most letters
-        best_words_to_write_res = sorted(best_words_to_write_res, key=lambda x: sum([top_letters[c] for c in x]), reverse=True)
+                if word.count(c) > 1:
+                    scored_words[word] -= 1000
 
         if len(best_words_to_write_res) > max_words:
             best_words_to_write_res = best_words_to_write_res[:10]
 
-        # # get 10 random words from best_words_to_write_res
-        # if len(best_words_to_write_res) > 10:
-        #     best_words_to_write_res = random.sample(best_words_to_write_res, 10)
+        # words = sorted(words, key=lambda x: sum([top_letters[c] for c in x]), reverse=True)
+        words_by_score = sorted(words_by_score, key=lambda x: scored_words[x], reverse=True)
+        for word in words_by_score[:10]:
+            print(word, scored_words[word])
 
         await bot.send_message(
             message.chat.id,
@@ -181,7 +167,7 @@ async def process_name(message: types.Message, state: FSMContext):
                 md.text('С уникальными буквами:', len(out_res)),
                 md.text('Выводится:', min(len(out_res),max_words)),
                 md.text('Получившиеся слова:', md.text(', '.join(out_res[:max_words]))),
-                md.text('\nЛучше попробовать эти слова:', md.text(', '.join(best_words_to_write_res[:max_words]))),
+                md.text('\nСлова для уточнения:', md.text(', '.join(words_by_score[:10]))),
                 sep='\n',
             ),
         )
