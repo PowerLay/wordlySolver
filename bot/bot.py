@@ -148,7 +148,7 @@ async def process_name(message: types.Message, state: FSMContext):
                     scored_words[word] += tmp_top_letters[c] * 2
 
                 if word.count(c) > 1:
-                    scored_words[word] -= 1000
+                    scored_words[word] -= 6000
 
 
         # words = sorted(words, key=lambda x: sum([top_letters[c] for c in x]), reverse=True)

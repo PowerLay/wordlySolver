@@ -1,17 +1,38 @@
+import random
 import re
 from xml.etree.ElementInclude import include
+from pymorphy2 import MorphAnalyzer
 
 
-def generate_rus_5(file='russian_nouns.txt'):
-    f = open(file, "r", encoding='utf-8')
-    out = open('dict_5.txt', 'w', encoding='utf-8')
+def generate_rus_5(file='russian.txt'):
+    f = open(file, "r", encoding='windows-1251')
+    out = open('dict_5_big.txt', 'w', encoding='utf-8')
 
-    for str in f:
-        if len(str) == 6:
-            out.write(str.replace('ё', 'е').lower())
+    # Фильтруем список слов с помощью морфологического анализатора
+    morph = MorphAnalyzer()
+    filtered_words = []
+
+    for word in f:
+        word = word.replace('\n', '')
+        if len(word) == 5:
+            parsed_word = morph.parse(word)[0]
+            # skip if not in alphabetic
+
+            if len([c for c in word if c.isalpha()]) != len(word):
+                continue
+            word = word.lower()
+            if 'NOUN' in parsed_word.tag and 'sing' in parsed_word.tag and 'nomn' in parsed_word.tag:
+                filtered_words.append(word)
+                out.write(word + '\n')
+
+    print("Total words:", len(filtered_words))
+
+    # print 10 random words
+    for i in range(10):
+        print(random.choice(filtered_words))
 
 
-def get_by_mask(mask: str, file='dict_5.txt'):
+def get_by_mask(mask: str, file='dict_5_big.txt'):
     res = []
     for line in open(file, "r", encoding='utf-8'):
         res += re.findall(mask, line.replace('\n', ''))
@@ -25,6 +46,7 @@ def get_letters_from_words(words_arr):
             if not c in res:
                 res += c
     return res
+
 
 def get_by_letters(letters: str, arr):
     res = []
