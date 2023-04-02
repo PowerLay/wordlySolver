@@ -20,7 +20,7 @@ def generate_rus_5(file='russian.txt'):
 
             if len([c for c in word if c.isalpha()]) != len(word):
                 continue
-            word = word.lower()
+            word = word.lower().replace('ё', 'е')
             if 'NOUN' in parsed_word.tag and 'sing' in parsed_word.tag and 'nomn' in parsed_word.tag:
                 filtered_words.append(word)
                 out.write(word + '\n')
