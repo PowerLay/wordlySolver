@@ -14,14 +14,23 @@ def generate_rus_5(file='russian.txt'):
 
     for word in f:
         word = word.replace('\n', '')
-        if len(word) == 5:
-            parsed_word = morph.parse(word)[0]
-            # skip if not in alphabetic
+        if len(word) < 4 or len(word) > 8:
+            continue
+        parsed_word = morph.parse(word)[0].inflect({'nomn'})
+        if parsed_word is None:
+            continue
 
-            if len([c for c in word if c.isalpha()]) != len(word):
-                continue
-            word = word.lower().replace('ё', 'е')
-            if 'NOUN' in parsed_word.tag and 'sing' in parsed_word.tag and 'nomn' in parsed_word.tag:
+        if len(parsed_word.normal_form) != 5:
+            continue
+
+        # skip if not in alphabetic
+        if len([c for c in word if c.isalpha()]) != len(word):
+            continue
+        word = parsed_word.normal_form.lower().replace('ё', 'е')
+        if 'NOUN' in parsed_word.tag and \
+            'sing' in parsed_word.tag and \
+            'nomn' in parsed_word.tag:
+            if word not in filtered_words:
                 filtered_words.append(word)
                 out.write(word + '\n')
 

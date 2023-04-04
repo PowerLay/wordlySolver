@@ -116,6 +116,10 @@ async def process_name(message: types.Message, state: FSMContext):
         res = get_by_mask(''.join(req))
         res = get_by_letters(include, res)
         res = exclude_by_letters(exclude, res)
+        # # print 10 random words
+        # logging.info('res len %s',len(res))
+        # for i in range(10):
+        #     print(random.choice(res))
 
         await state.update_data(req=req)
         data['exclude'] = exclude
@@ -148,7 +152,7 @@ async def process_name(message: types.Message, state: FSMContext):
                     scored_words[word] += tmp_top_letters[c] * 2
 
                 if word.count(c) > 1:
-                    scored_words[word] -= 6000
+                    scored_words[word] -= 7000
 
 
         # words = sorted(words, key=lambda x: sum([top_letters[c] for c in x]), reverse=True)
